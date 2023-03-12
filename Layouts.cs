@@ -76,7 +76,7 @@ namespace SMKToolbox
 
 
             public static Bitmap DisplayTiles(Bitmap[][] bitmaps, TileDetails[] tileDetails)
-        {
+            {
             int layoutWidth = 32;
             int layoutHeight = 32;
 
@@ -157,6 +157,7 @@ namespace SMKToolbox
                     pictureBox.Size = new Size(pictureBoxSize, pictureBoxSize);
                     pictureBox.Location = new Point(x * pictureBoxSize, y * pictureBoxSize);
                     pictureBox.Image = tile;
+                    pictureBox.Padding = new Padding(0);
                 }
             }
         }
@@ -174,16 +175,22 @@ namespace SMKToolbox
                 for (int x = 0; x < layoutWidth; x++)
                 {
                     int index = y * layoutWidth + x;
-                    // Get tile bitmap
-                    Bitmap tile = bitmaps[palette][tileCounter];
+                    try
+                    {
+                        Bitmap tile = bitmaps[palette][tileCounter];
 
-                    
-                    // Get the corresponding picture box
-                    PictureBox pictureBox = (PictureBox)tilePickerPanel.Controls[index];
-                    pictureBox.Size = new Size(pictureBoxSize, pictureBoxSize);
-                    pictureBox.Location = new Point(x * pictureBoxSize, y * pictureBoxSize);
-                    pictureBox.Image = tile;
-                    tileCounter++;
+
+                        // Get the corresponding picture box
+                        PictureBox pictureBox = (PictureBox)tilePickerPanel.Controls[index];
+                        pictureBox.Size = new Size(pictureBoxSize, pictureBoxSize);
+                        pictureBox.Location = new Point(x * pictureBoxSize, y * pictureBoxSize);
+                        pictureBox.Image = tile;
+                        tileCounter++;
+                    }
+                    catch(Exception Ex)
+                    {
+                        return;
+                    }
                 }
                 
             }

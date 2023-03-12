@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using EpicEdit.Rom.Compression;
 
 namespace SMKToolbox
 {
@@ -35,6 +36,160 @@ namespace SMKToolbox
             }
         }
 
+        public static (byte[], bool) Compress(byte[] uncompressed)
+        {
+            byte[] compressed;
+            try
+            {
+                compressed = Codec.Compress(uncompressed, false, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while compressing data: " + ex.Message);
+                return (null, false);
+            }
+            return (compressed, true);
+        }
+
+        public static bool CompressAndInsert(byte[] uncompressed, int offset, int sizeLimit, string ROM)
+        {
+            byte[] compressed;
+            try
+            {
+                compressed = Codec.Compress(uncompressed, false, true);
+                if (compressed.Length > sizeLimit)
+                {
+                    MessageBox.Show("Compressed data is too big to reinsert to ROM","Warning");
+                }
+                else
+                {
+                    Insert(ROM, compressed, offset);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while compressing data: " + ex.Message);
+                return (false);
+            }
+            return (true);
+        }
+
+        public static bool DoubleCompressAndInsert(byte[] uncompressed, int offset, int sizeLimit, string ROM)
+        {
+            byte[] compressed;
+            try
+            {
+                compressed = Codec.Compress(uncompressed, true, true);
+                if (compressed.Length > sizeLimit)
+                {
+                    MessageBox.Show("Compressed data is too big to reinsert to ROM", "Warning");
+                }
+                else
+                {
+                    Insert(ROM, compressed, offset);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while compressing data: " + ex.Message);
+                return (false);
+            }
+            return (true);
+        }
+        public static (byte[], bool) DoubleCompress(byte[] uncompressed)
+        {
+            byte[] compressed;
+            try
+            {
+                compressed = Codec.Compress(uncompressed, true, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while compressing data: " + ex.Message);
+                return (null, false);
+            }
+            return (compressed, true);
+        }
+
+        public static (byte[], bool) Decompress(byte[] compressed, int offset)
+        {
+            byte[] decompressed;
+            try
+            {
+                decompressed = Codec.Decompress(compressed, offset, false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while decompressing data: " + ex.Message);
+                return (null, false);
+            }
+            return (decompressed, true);
+        }
+
+        public static (byte[], bool) DecompressFromROM(string ROM, int offset)
+        {
+            
+            (byte[] compressed, bool status) = Read(ROM);
+            byte[] decompressed;
+            if (status)
+            {
+                try
+                {
+                    decompressed = Codec.Decompress(compressed, offset, false);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occurred while decompressing data from file " + ROM + ": " + ex.Message);
+                    return (null, false);
+                }
+                return (decompressed, true);
+            }
+            else
+            {
+                return (null, false);
+            }
+        }
+
+        public static (byte[], bool) DoubleDecompressFromROM(string ROM, int offset)
+        {
+            (byte[] compressed, bool status) = Read(ROM);
+            byte[] decompressed;
+            if (status)
+            {
+                try
+                {
+                    decompressed = Codec.Decompress(compressed, offset, true);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occurred while double decompressing data from file " + ROM + ": " + ex.Message);
+                    return (null, false);
+                }
+                return (decompressed, true);
+            }
+            else
+            {
+                return (null, false);
+            }
+        }
+
+        public static (byte[], bool) DoubleDecompress(byte[] compressed, int offset)
+        {
+            byte[] decompressed;
+            try
+            {
+                decompressed = Codec.Decompress(compressed, offset, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while double decompressing data: " + ex.Message);
+                return (null, false);
+            }
+            return (decompressed, true);
+        }
+
         //Write: Takes in a filename, byte[] and overwrite flag and writes the byte[] to the file, then returns the the status of it's success
         //Write: Takes in a filename, byte[] and overwrite flag and writes the byte[] to the file, then returns the the status of it's success
         public static bool Write(string fileName, byte[] fileBytes, bool overwrite)
@@ -60,6 +215,16 @@ namespace SMKToolbox
                 MessageBox.Show("An error occurred while writing the file: " + ex.Message);
                 return false;
             }
+        }
+
+        public static byte[] setuparray(int size)
+        {
+            byte[] buffer = new byte[size];
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                buffer[i] = 0xFF;
+            }
+            return (buffer);
         }
 
         //Insert: Takes in a filename, byte[] and offset flag and writes the byte[] to the file at the offset provided, then returns the the status of it's success

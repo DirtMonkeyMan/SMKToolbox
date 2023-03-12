@@ -30,6 +30,12 @@ namespace SMKToolbox
         {
 
         }
+
+        private void buttonRankingNumbers_Click(object sender, EventArgs e)
+        {
+            RankingNumbersEditor rankingEditor = new RankingNumbersEditor();
+            rankingEditor.Show();
+        }
     }
 }
 

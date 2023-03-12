@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SMKToolbox")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("SMK Toolbox")]
+[assembly: AssemblyDescription("A tool set for modding SMK")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("SMKWorkshop")]
 [assembly: AssemblyProduct("SMKToolbox")]
 [assembly: AssemblyCopyright("Copyright ©  2023")]
 [assembly: AssemblyTrademark("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("a5d7c325-c584-4fe9-9f22-3e73daf2ed83")]
+[assembly: Guid("bc1cb004-1634-4399-b71a-9d7c27e957d2")]
 
 // Version information for an assembly consists of the following four values:
 //
