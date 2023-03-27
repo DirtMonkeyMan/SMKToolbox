@@ -36,6 +36,17 @@ namespace SMKToolbox
             RankingNumbersEditor rankingEditor = new RankingNumbersEditor();
             rankingEditor.Show();
         }
+
+        private void buttonAssetManager_Click(object sender, EventArgs e)
+        {
+            AssetManager assetManager = new AssetManager();
+        }
+
+        private void buttonDemoEditor_Click(object sender, EventArgs e)
+        {
+            DemoMaker demoMaker = new DemoMaker();
+            demoMaker.Show();
+        }
     }
 }
 
