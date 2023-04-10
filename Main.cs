@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define icesanWarning
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -46,6 +48,21 @@ namespace SMKToolbox
         {
             DemoMaker demoMaker = new DemoMaker();
             demoMaker.Show();
+        }
+
+        private void buttonTrackEditor_Click(object sender, EventArgs e)
+        {
+#if icesanWarning
+            System.Media.SystemSounds.Question.Play();
+            if (MessageBox.Show("The Track Editor is not yet finished. By clicking on 'Yes', you agree that Icesan takes no responsibility if your computer deletes your track files or otherwise spontaneously combusts. Otherwise, click 'No'.","Warning",MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                TrackManager trackManager = new TrackManager();
+                trackManager.Show();
+            }
+#else
+            TrackManager trackManager = new TrackManager();
+            trackManager.Show();
+#endif
         }
     }
 }
