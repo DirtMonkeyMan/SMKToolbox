@@ -86,7 +86,7 @@ namespace SMKToolbox
         private void geneate()
         {
             Payload.body = setuparray(Decimal.ToInt32(BufferSize.Value));
-            Payload.body = readline(Filename.inputfile, Payload.body, "NTSC", dataGridView1, Info);
+            Payload.body = readline(Filename.inputfile, Payload.body, "NTSC", dataGridView1, rtb);
 
             DataArea.Text = "Data Area: " + String.Format("{0:X2}", Header.array[0]) + String.Format("{0:X2}", Header.array[1]);
             Checksum.Text = "Checksum: " + String.Format("{0:X2}", Header.array[2]) + String.Format("{0:X2}", Header.array[3]);
@@ -370,8 +370,6 @@ namespace SMKToolbox
 
             file.Close();
             System.Console.WriteLine("There were {0} lines in total, with {1} line of instructions.", linecount, counter);
-
-
             return (buffer);
         }
         static byte addbit(byte array, int mask)
@@ -735,7 +733,7 @@ namespace SMKToolbox
                         catch
                         {
                             Console.WriteLine("Error saving");
-                            AppendText(Info, "Error saving demo to ROM", Color.Red, true);
+                            AppendText(rtb, "Error saving demo to ROM", Color.Red, true);
                         }
                     }
                 }
@@ -743,7 +741,7 @@ namespace SMKToolbox
             else
             {
                 //no data to save 
-                AppendText(Info, "No data to save, load CSV file first", Color.Black, true);
+                AppendText(rtb, "No data to save, load CSV file first", Color.Black, true);
             }
         }
 
@@ -781,7 +779,7 @@ namespace SMKToolbox
                         catch
                         {
                             Console.WriteLine("Error saving");
-                            AppendText(Info, "Error saving demo to ROM", Color.Red, true);
+                            AppendText(rtb, "Error saving demo to ROM", Color.Red, true);
                         }
 
                     }
@@ -791,7 +789,7 @@ namespace SMKToolbox
             else
             {
                 //no data to save nothing to do
-                AppendText(Info, "No data to save, load CSV file first", Color.Black, true);
+                AppendText(rtb, "No data to save, load CSV file first", Color.Black, true);
             }
 
         }
@@ -805,16 +803,705 @@ namespace SMKToolbox
 
         }
 
-        private void Offset_ValueChanged(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            Payload.offset = Convert.ToInt32(Offset.Value);
+            try
+            {
+
+                File.WriteAllText(".\\demomaker.lua",
+    "function read_byte(addr)\n" +
+    "	if (addr >= 0x7e0000) and (addr <= 0x7fffff) then \n" +
+    "		local return_domain = memory.getcurrentmemorydomain()\n" +
+    "		memory.usememorydomain(\"WRAM\")\n" +
+    "		local b = memory.readbyte(addr - 0x7e0000)\n" +
+    "		memory.usememorydomain(return_domain)\n" +
+    "		return b\n" +
+    "	elseif (addr <= 0x1fff) then\n" +
+    "		local return_domain = memory.getcurrentmemorydomain()\n" +
+    "		memory.usememorydomain(\"WRAM\")\n" +
+    "		local b = memory.readbyte(addr)\n" +
+    "		memory.usememorydomain(return_domain)\n" +
+    "		return b\n" +
+    "	else\n" +
+    "		return memory.readbyte(addr)\n" +
+    "	end\n" +
+    "end\n" +
+    "\n" +
+    "\n" +
+    "function read_word(addr)\n" +
+    "	return read_byte(addr+1)*256 + read_byte(addr)\n" +
+    "end\n" +
+    "\n" +
+    "function read_long(addr)\n" +
+    "	return read_byte(addr+2)*256*256 + read_byte(addr+1)*256 + read_byte(addr)\n" +
+    "end\n" +
+    "\n" +
+    "\n" +
+    "function inRace()\n" +
+    "	local gm = read_byte(0x7e0036) -- gamemode\n" +
+    "	if (gm == 0x2) or (gm == 0xe) then\n" +
+    "		return true\n" +
+    "	end\n" +
+    "	return false\n" +
+    "end\n" +
+    "\n" +
+    "function raceStatus()\n" +
+    "\n" +
+    "	local rs = read_byte(0x7e003a) -- race status\n" +
+    "\n" +
+    "	--console.write(tostring(gm) .. \" \" .. tostring(rs) .. \"\\n\")\n" +
+    "\n" +
+    "	if inRace() then\n" +
+    "		if (rs == 0x4) or (rs == 0x6) then\n" +
+    "			return true\n" +
+    "		end\n" +
+    "	end\n" +
+    "	return false\n" +
+    "end\n" +
+    "\n" +
+    "function check_kart_active(v)\n" +
+    "	if v == 0 then return false end\n" +
+    "\n" +
+    "	--if bit.band(v, 0x8000) == 0 then return false end\n" +
+    "\n" +
+    "	----if bit.band(v, 0x4000) ~= 0 then return false end\n" +
+    "\n" +
+    "	if bit.band(v, 0x0020) ~= 0 then return false end\n" +
+    "\n" +
+    "	return true\n" +
+    "\n" +
+    "end\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "function get_joypad(jpnum)\n" +
+    "	local offs = (jpnum-1)*2\n" +
+    "\n" +
+    "	local ctrl_l_a = read_byte(0x20 + offs + 0) \n" +
+    "	local ctrl_h_a = read_byte(0x20 + offs + 1)\n" +
+    "\n" +
+    "	local ctrl_l_b = read_byte(0x28 + offs + 0) \n" +
+    "	local ctrl_h_b = read_byte(0x28 + offs + 1)\n" +
+    "\n" +
+        "\n" +
+    "	local hld = {}\n" +
+    "\n" +
+    "	hld.A      = bit.check(ctrl_l_a, 7)\n" +
+    "	hld.X      = bit.check(ctrl_l_a, 6)\n" +
+    "	hld.L      = bit.check(ctrl_l_a, 5)\n" +
+    "	hld.R      = bit.check(ctrl_l_a, 4)\n" +
+    "\n" +
+    "	hld.B      = bit.check(ctrl_h_a, 7)\n" +
+    "	hld.Y      = bit.check(ctrl_h_a, 6)\n" +
+    "	hld.Select = bit.check(ctrl_h_a, 5)\n" +
+    "	hld.Start  = bit.check(ctrl_h_a, 4)\n" +
+    "	hld.Up     = bit.check(ctrl_h_a, 3)\n" +
+    "	hld.Down   = bit.check(ctrl_h_a, 2)\n" +
+    "	hld.Left   = bit.check(ctrl_h_a, 1)\n" +
+    "	hld.Right  = bit.check(ctrl_h_a, 0)\n" +
+    "\n" +
+    "	local tap = {}\n" +
+    "\n" +
+    "	tap.A      = bit.check(ctrl_l_b, 7)\n" +
+    "	tap.X      = bit.check(ctrl_l_b, 6)\n" +
+    "	tap.L      = bit.check(ctrl_l_b, 5)\n" +
+    "	tap.R      = bit.check(ctrl_l_b, 4)\n" +
+    "\n" +
+    "	tap.B      = bit.check(ctrl_h_b, 7)\n" +
+    "	tap.Y      = bit.check(ctrl_h_b, 6)\n" +
+    "	tap.Select = bit.check(ctrl_h_b, 5)\n" +
+    "	tap.Start  = bit.check(ctrl_h_b, 4)\n" +
+    "	tap.Up     = bit.check(ctrl_h_b, 3)\n" +
+    "	tap.Down   = bit.check(ctrl_h_b, 2)\n" +
+    "	tap.Left   = bit.check(ctrl_h_b, 1)\n" +
+    "	tap.Right  = bit.check(ctrl_h_b, 0)\n" +
+    "\n" +
+    "	local jp = {}\n" +
+    "\n" +
+    "	jp.hld = hld\n" +
+    "	jp.tap = tap\n" +
+    "\n" +
+    "	return jp\n" +
+    "\n" +
+    "end\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "B_c      = \"B\"\n" +
+    "Y_c      = \"Y\"\n" +
+    "START_c  = \"+\"\n" +
+    "SELECT_c = \"-\"\n" +
+    "\n" +
+    "UP_c    = \"^\"\n" +
+    "DOWN_c  = \"v\"\n" +
+    "LEFT_c  = \"<\"\n" +
+    "RIGHT_c = \">\"\n" +
+    "\n" +
+    "A_c     = \"A\"\n" +
+    "X_c     = \"X\"\n" +
+    "L_c     = \"L\"\n" +
+    "R_c     = \"R\"\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "tw = 10\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "B_d      = 0\n" +
+    "Y_d      = B_d      + tw*(string.len(B_c)+1)\n" +
+    "SELECT_d = Y_d      + tw*(string.len(Y_c)+1)\n" +
+    "START_d  = SELECT_d + tw*(string.len(SELECT_c)+1)\n" +
+    "UP_d     = START_d  + tw*(string.len(START_c)+1)\n" +
+    "DOWN_d   = UP_d     + tw*(string.len(UP_c)+1)\n" +
+    "LEFT_d   = DOWN_d   + tw*(string.len(DOWN_c)+1)\n" +
+    "RIGHT_d  = LEFT_d   + tw*(string.len(LEFT_c)+1)\n" +
+    "A_d      = RIGHT_d  + tw*(string.len(RIGHT_c)+1)\n" +
+    "X_d      = A_d      + tw*(string.len(A_c)+1)\n" +
+    "L_d      = X_d      + tw*(string.len(X_c)+1)\n" +
+    "R_d      = L_d      + tw*(string.len(L_c)+1)\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "function inp_text(display_text, display_offset, csv_text)\n" +
+    "	local t = {}\n" +
+    "	t.d_txt = display_text\n" +
+    "	t.d_off = display_offset\n" +
+    "	t.c_txt = csv_text\n" +
+    "	return t\n" +
+    "end\n" +
+    "\n" +
+    "\n" +
+    "local input_texts\n" +
+    "function processInput(input_check, input_c, x, y)\n" +
+    "\n" +
+    "	input_texts = input_texts or {\n" +
+    "		[B_c]      = function() return inp_text(B_c,      B_d,      \"B\") end,\n" +
+    "		[Y_c]      = function() return inp_text(Y_c,      Y_d,      \"Y\") end,\n" +
+    "		[SELECT_c] = function() return inp_text(SELECT_c, SELECT_d, \"SELECT\") end,\n" +
+    "		[START_c]  = function() return inp_text(START_c,  START_d,  \"START\") end,\n" +
+    "		[UP_c]     = function() return inp_text(UP_c,     UP_d,     \"UP\") end,\n" +
+    "		[DOWN_c]   = function() return inp_text(DOWN_c,   DOWN_d,   \"DOWN\") end,\n" +
+    "		[LEFT_c]   = function() return inp_text(LEFT_c,   LEFT_d,   \"LEFT\") end,\n" +
+    "		[RIGHT_c]  = function() return inp_text(RIGHT_c,  RIGHT_d,  \"RIGHT\") end,\n" +
+    "		[A_c]      = function() return inp_text(A_c,      A_d,      \"A\") end,\n" +
+    "		[X_c]      = function() return inp_text(X_c,      X_d,      \"X\") end,\n" +
+    "		[L_c]      = function() return inp_text(L_c,      L_d,      \"LT\") end,\n" +
+    "		[R_c]      = function() return inp_text(R_c,      R_d,      \"RT\") end\n" +
+    "	}\n" +
+    "\n" +
+    "	if input_check then\n" +
+    "		local t = input_texts[input_c]()\n" +
+    "		gui.text(x + t.d_off, y, t.d_txt)\n" +
+    "		return t.c_txt .. \",\"\n" +
+    "	end\n" +
+    "\n" +
+    "	return \"\"\n" +
+    "end\n" +
+    "\n" +
+    "\n" +
+    "local process_input\n" +
+    "function captureInput(JOYPAD, X_offset, Y_offset)\n" +
+        "\n" +
+    "	currentFrame=\",\"\n" +
+    "\n" +
+    "	--process_input[B_c](JOYPAD)\n" +
+    "\n" +
+    "	process_input = process_input or {\n" +
+    "		[B_c]      = function(JYPD, x, y) return processInput(JYPD.hld.B,      B_c,      x, y) end,\n" +
+    "		[Y_c]      = function(JYPD, x, y) return processInput(JYPD.hld.Y,      Y_c,      x, y) end,\n" +
+    "		[SELECT_c] = function(JYPD, x, y) return processInput(JYPD.tap.Select, SELECT_c, x, y) end,\n" +
+    "		[START_c]  = function(JYPD, x, y) return processInput(JYPD.tap.Start,  START_c,  x, y) end,\n" +
+    "		[UP_c]     = function(JYPD, x, y) return processInput(JYPD.hld.Up,     UP_c,     x, y) end,\n" +
+    "		[DOWN_c]   = function(JYPD, x, y) return processInput(JYPD.hld.Down,   DOWN_c,   x, y) end,\n" +
+    "		[LEFT_c]   = function(JYPD, x, y) return processInput(JYPD.hld.Left,   LEFT_c,   x, y) end,\n" +
+    "		[RIGHT_c]  = function(JYPD, x, y) return processInput(JYPD.hld.Right,  RIGHT_c,  x, y) end,\n" +
+    "		[A_c]      = function(JYPD, x, y) return processInput(JYPD.tap.A,      A_c,      x, y) end,\n" +
+    "		[X_c]      = function(JYPD, x, y) return processInput(JYPD.hld.X,      X_c,      x, y) end,\n" +
+    "		[L_c]      = function(JYPD, x, y) return processInput(JYPD.hld.L,      L_c,      x, y) end,\n" +
+    "		[R_c]      = function(JYPD, x, y) return processInput(JYPD.hld.R,      R_c,      x, y) end\n" +
+    "	}\n" +
+    "\n" +
+    "\n" +
+    "	-- MrL's Note: Not all of the inputs are tested for changes.\n" +
+    "	currentFrame = currentFrame .. process_input[B_c](JOYPAD, X_offset, Y_offset)\n" +
+    "	currentFrame = currentFrame .. process_input[Y_c](JOYPAD, X_offset, Y_offset)\n" +
+    "	--currentFrame = currentFrame .. process_input[SELECT_c](JOYPAD, X_offset, Y_offset)\n" +
+    "	--currentFrame = currentFrame .. process_input[START_c](JOYPAD, X_offset, Y_offset)\n" +
+    "	--currentFrame = currentFrame .. process_input[UP_c](JOYPAD, X_offset, Y_offset)\n" +
+    "	--currentFrame = currentFrame .. process_input[DOWN_c](JOYPAD, X_offset, Y_offset)\n" +
+    "	currentFrame = currentFrame .. process_input[LEFT_c](JOYPAD, X_offset, Y_offset)\n" +
+    "	currentFrame = currentFrame .. process_input[RIGHT_c](JOYPAD, X_offset, Y_offset)\n" +
+    "	currentFrame = currentFrame .. process_input[A_c](JOYPAD, X_offset, Y_offset)\n" +
+    "	--currentFrame = currentFrame .. process_input[X_c](JOYPAD, X_offset, Y_offset)\n" +
+    "	currentFrame = currentFrame .. process_input[L_c](JOYPAD, X_offset, Y_offset)\n" +
+    "	currentFrame = currentFrame .. process_input[R_c](JOYPAD, X_offset, Y_offset)\n" +
+    "\n" +
+    "\n" +
+    "	return currentFrame\n" +
+    "\n" +
+    "end\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "function newDemoData(output_file, player_number)\n" +
+    "	local d = {}\n" +
+    "\n" +
+    "	d.inputBuffer = \"\"\n" +
+    "	d.currInput = \",\"\n" +
+    "	d.previousFrame = \",\"\n" +
+    "	d.buffer_size = 0\n" +
+    "	d.fcnt = 0\n" +
+    "	d.first = true\n" +
+    "	d.active = false\n" +
+    "	d.ready = false\n" +
+    "\n" +
+    "	d.b_first = false\n" +
+    "\n" +
+    "	if output_file == nil then\n" +
+    "		d.file = nil\n" +
+    "	else\n" +
+    "		d.file = io.open(output_file, \"w+\")\n" +
+    "	end\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "	if d.file ~= nil then\n" +
+    "		d.file:write(\"#Demo Recording Capture Tool 0.1 By Dirtbag and MrL314\\n\")\n" +
+    "		d.file:write(\"#-----------------------------------------------------\\n\")\n" +
+    "		d.active = true\n" +
+    "	end\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "	return d\n" +
+    "end\n" +
+    "\n" +
+    "\n" +
+    "function newHeader()\n" +
+    "	local h = {}\n" +
+    "\n" +
+    "	h.data_area = 0 -- not used in save data\n" +
+    "	h.checksum = 0\n" +
+    "	h.camera_mode = 0\n" +
+    "	h.save_code = 0\n" +
+    "	h.rng_seed = 0\n" +
+    "	h.time = 0\n" +
+    "	h.kart_type = 0\n" +
+    "	h.cup = 0\n" +
+    "	h.map = 0\n" +
+    "	h.name = 0  -- not used in save data\n" +
+    "\n" +
+    "	return h\n" +
+    "end\n" +
+    "\n" +
+    "function to_n_bytes(val, n)\n" +
+    "\n" +
+    "	local s = \"\"\n" +
+    "	local v = val\n" +
+    "	local b = 0\n" +
+    "\n" +
+    "	for i=1,n do\n" +
+    "		b = bit.band(v, 0xFF)\n" +
+    "		v = bit.rshift(v, 8)\n" +
+    "\n" +
+    "		s = s .. tostring(b)\n" +
+    "\n" +
+    "		if i < n then\n" +
+    "			s = s .. \",\"\n" +
+    "		end\n" +
+    "	end\n" +
+    "\n" +
+    "	return s\n" +
+    "end\n" +
+    "\n" +
+    "\n" +
+    "function headerToString(h)\n" +
+    "	local s = \"\"\n" +
+    "\n" +
+    "	s = s .. \"data_area,\" .. to_n_bytes(h.data_area, 2) .. \"\\n\"\n" +
+    "	s = s .. \"checksum,\" .. to_n_bytes(h.checksum, 2) .. \"\\n\"\n" +
+    "	s = s .. \"camera_mode,\" .. to_n_bytes(h.camera_mode, 2) .. \"\\n\"\n" +
+    "	s = s .. \"save_code,\" .. to_n_bytes(h.save_code, 2) .. \"\\n\"\n" +
+    "	s = s .. \"rng_seed,\" .. to_n_bytes(h.rng_seed, 2) .. \"\\n\"\n" +
+    "	s = s .. \"time,\" .. tostring(h.time[1]) .. \",\" .. tostring(h.time[2]) .. \",\" .. tostring(h.time[3]) .. \"\\n\"\n" +
+    "	s = s .. \"kart_type,\" .. to_n_bytes(h.kart_type, 1) .. \"\\n\"\n" +
+    "	s = s .. \"cup,\" .. to_n_bytes(h.cup, 1) .. \"\\n\"\n" +
+    "	s = s .. \"map,\" .. to_n_bytes(h.map, 1) .. \"\\n\"\n" +
+        "\n" +
+    "	-- handle name specially\n" +
+    "	s = s .. \"name,\"\n" +
+    "	-- for now, just write arbitrary value\n" +
+    "	s = s .. \"0,0,0,0,0,0,0,0\"\n" +
+    "	s = s .. \"\\n\"\n" +
+    "\n" +
+    "	return s\n" +
+    "\n" +
+    "end\n" +
+    "\n" +
+    "\n" +
+    "DEMO = {}\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "function get_core()\n" +
+    "	local return_domain = memory.getcurrentmemorydomain()\n" +
+    "\n" +
+    "	local s = \"\"\n" +
+        "\n" +
+    "	if memory.usememorydomain(\"OAM\") then\n" +
+    "		s = \"BSNES\"\n" +
+    "	else\n" +
+    "		s = \"Snes9x\"\n" +
+    "	end\n" +
+    "\n" +
+    "	memory.usememorydomain(return_domain)\n" +
+    "	return s\n" +
+    "end\n" +
+    "\n" +
+    "\n" +
+    "CURR_CORE = get_core()\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "console.clear()\n" +
+    "\n" +
+    "console.log('Demo Recoding Capture Tool 0.1 By Dirtbag and MrL314')\n" +
+    "console.log('Lua advance kart interactive Vehicle interface emulating wheels')\n" +
+    "console.log('Using core: ' .. CURR_CORE)\n" +
+    "\n" +
+    "--demomaker CSV order: RIGHT, LEFT, A, B, X, Y, RIGHTTRIGGER, LEFTTRIGGER, START\n" +
+    "--Start of race 0x3f0000 is 240 (on TT and Vs selection screen also 240 but goes to 32 then 240 again when race starts)\n" +
+    "\n" +
+    "local P1 = newDemoData(nil, 1)\n" +
+    "local P2 = newDemoData(nil, 2)\n" +
+    "\n" +
+    "READY = false\n" +
+    "QUIT = false\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "function ReadyButtonClick()\n" +
+    "	if READY == false then\n" +
+    "		READY = true\n" +
+    "	end\n" +
+    "end\n" +
+    "\n" +
+    "function FILE1_SET()\n" +
+    "	local floc = forms.openfile()\n" +
+    "	if floc ~= \"\" then\n" +
+    "		forms.settext(file1_tbox, floc)\n" +
+    "	end\n" +
+    "end\n" +
+    "\n" +
+    "function FILE2_SET()\n" +
+    "	local floc = forms.openfile()\n" +
+    "	if floc ~= \"\" then\n" +
+    "		forms.settext(file2_tbox, floc)\n" +
+    "	end\n" +
+    "end\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "FORM = forms.newform(250,180,\"LakiView 0.1\")\n" +
+    "\n" +
+    "\n" +
+    "file1_label = forms.label(FORM, \"P1 file:\", 0, 2, 40, 18)\n" +
+    "file1_tbox  = forms.textbox(FORM, \"demo_p1.csv\", 140, 20, nil, 40, 0)\n" +
+    "file1_setb  = forms.button(FORM, \"Select\", FILE1_SET, 182, 0, 50, 20)\n" +
+    "\n" +
+    "file2_label = forms.label(FORM, \"P2 file:\", 0, 24, 40, 18)\n" +
+    "file2_tbox  = forms.textbox(FORM, \"demo_p2.csv\", 140, 20, nil, 40, 20)\n" +
+    "file2_setb  = forms.button(FORM, \"Select\", FILE2_SET, 182, 20, 50, 20)\n" +
+    "\n" +
+    "\n" +
+    "ready_button = forms.button(FORM, \"RECORD\", ReadyButtonClick, 10, 90, 150, 40)\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "function UPDATE()\n" +
+    "\n" +
+    "	if READY == false then\n" +
+    "		forms.settext(ready_button, \"RECORD\")\n" +
+    "	else\n" +
+    "		if (P1.active or P2.active) then\n" +
+    "			forms.settext(ready_button, \"-- RECORDING --\")\n" +
+    "		else\n" +
+    "			forms.settext(ready_button, \"WAITING TO BEGIN\")\n" +
+    "		end\n" +
+    "	end\n" +
+    "\n" +
+    "	emu.frameadvance()\n" +
+    "end\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "header = newHeader()\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "while true do\n" +
+    "\n" +
+    "	-- wait for signal \"ready to record\"\n" +
+    "	while not READY do UPDATE() end\n" +
+    "\n" +
+    "	-- wait to finish current race (if in the middle of one)\n" +
+    "	while raceStatus() do UPDATE() end\n" +
+    "\n" +
+    "	-- wait for race to start\n" +
+    "	while (not raceStatus()) do UPDATE() end\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "	-- Set which screens are active in order to record\n" +
+    "	local dm = read_byte(0x7e002e) -- display mode, select top or bottom active\n" +
+    "\n" +
+    "	P1.ready = true\n" +
+    "	P2.ready = true\n" +
+    "\n" +
+    "	if dm == 2 then\n" +
+    "		P2.ready = false\n" +
+    "	elseif dm == 4 then\n" +
+    "		P1.ready = false\n" +
+    "	end\n" +
+    "\n" +
+    "	-- TODO: re-record ghost maybe? not needed but check just in case\n" +
+    "	P1.file = nil\n" +
+    "	P2.file = nil\n" +
+    "\n" +
+    "	if P1.ready then P1 = newDemoData(forms.gettext(file1_tbox)) end\n" +
+    "	if P2.ready then P2 = newDemoData(forms.gettext(file2_tbox)) end\n" +
+    "\n" +
+    "	if CURR_CORE == \"BSNES\" then\n" +
+    "		P1.b_first = true\n" +
+    "		P2.b_first = true\n" +
+    "	end\n" +
+    "\n" +
+    "	-- Header data\n" +
+    "	header = newHeader()\n" +
+    "\n" +
+    "	header.data_area = 0xFFFF -- not used in save data (2 bytes)\n" +
+    "	header.checksum = 0xFFFF -- calculate checksum in demomaker script, not here (2 bytes)\n" +
+    "	header.camera_mode = read_word(0x7f6004)\n" +
+    "	header.save_code = read_word(0x7f6006)\n" +
+    "	header.rng_seed = read_word(0x7f6008)\n" +
+    "	header.time = {0xFF, 0xFF, 0xFF} -- calculate later at end of demo (3 bytes)\n" +
+    "	header.kart_type = 0xFF --read_byte(0x7f600d)\n" +
+    "	header.cup = read_byte(0x7f600e)\n" +
+    "	header.map = read_byte(0x7f600f)\n" +
+    "	header.name = {} -- not used in save data (8 bytes)\n" +
+    "\n" +
+    "	P1_kart = 0xFF\n" +
+    "	P2_kart = 0xFF\n" +
+    "	P1_time_d = 0xFF\n" +
+    "	P1_time_s = 0xFF\n" +
+    "	P1_time_m = 0xFF\n" +
+    "	P2_time_d = 0xFF\n" +
+    "	P2_time_s = 0xFF\n" +
+    "	P2_time_m = 0xFF\n" +
+    "\n" +
+    "\n" +
+    "	p1_active = P1.active\n" +
+    "	p2_active = P2.active\n" +
+        "\n" +
+    "\n" +
+    "\n" +
+        "\n" +
+    "	while p1_active or p2_active do\n" +
+    "\n" +
+    "		p1_active = P1.active\n" +
+    "		p2_active = P2.active\n" +
+    "\n" +
+    "		if not raceStatus() then\n" +
+    "			P1.active = false\n" +
+    "			P2.active = false\n" +
+    "		end\n" +
+    "\n" +
+    "\n" +
+    "		-- Press \"Start\" on joypad 1 or joypad 2 to end the respective recording\n" +
+    "		if get_joypad(1).tap.Start == true and P1.active then P1.active = false end\n" +
+    "		if get_joypad(2).tap.Start == true and P2.active then P2.active = false end\n" +
+    "\n" +
+    "		if P1.active and (not check_kart_active(read_word(0x7e1010))) then P1.active = false end\n" +
+    "		if P2.active and (not check_kart_active(read_word(0x7e1110))) then P2.active = false end\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "		if P1.active then\n" +
+    "\n" +
+    "			P1_kart = read_byte(0x7e1012)\n" +
+    "\n" +
+    "			gui.text(10, 8, \"Buffer Size: \" .. tostring(P1.buffer_size) .. \"/1512\")\n" +
+    "			gui.text(10,48, \"Frames Held: \" .. tostring(P1.fcnt + 1) .. \"/512\")\n" +
+    "			P1.currInput = captureInput(get_joypad(1), 10, 28)\n" +
+    "\n" +
+    "			\n" +
+    "			if (not P1.first) then\n" +
+    "\n" +
+    "				local inc_cnt = false\n" +
+    "				if P1.currInput == P1.previousFrame and P1.fcnt < 0x1FF then\n" +
+    "					inc_cnt = true\n" +
+    "				end\n" +
+    "\n" +
+    "\n" +
+    "				if inc_cnt then\n" +
+    "					P1.fcnt = P1.fcnt + 1\n" +
+    "				else\n" +
+    "					--Different input, update previous frame, save to buffer and reset frame counter\n" +
+    "					P1.inputBuffer = P1.inputBuffer .. tostring(P1.fcnt) .. P1.previousFrame .. \"\\n\"\n" +
+    "					P1.fcnt = 0\n" +
+    "					P1.buffer_size = P1.buffer_size + 2\n" +
+    "				end\n" +
+    "\n" +
+    "				\n" +
+    "\n" +
+    "				if P1.buffer_size >= 0x5e8 then\n" +
+    "					P1.active = false\n" +
+    "				end\n" +
+    "			else\n" +
+    "				if P1.b_first then\n" +
+    "					P1.b_first = false\n" +
+    "				else\n" +
+    "					P1.first = false\n" +
+    "				end\n" +
+    "			end\n" +
+    "\n" +
+    "			P1.previousFrame = P1.currInput\n" +
+    "		else\n" +
+    "			if p1_active then\n" +
+    "				P1_time_d = read_byte(0x7e0100 + 1)\n" +
+    "				P1_time_s = read_byte(0x7e0100 + 2)\n" +
+    "				P1_time_m = read_byte(0x7e0100 + 4)\n" +
+    "			end\n" +
+    "		end\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "		if P2.active then\n" +
+    "\n" +
+    "			P2_kart = read_byte(0x7e1112)\n" +
+    "\n" +
+    "			gui.text(10,232, \"Buffer Size: \" .. tostring(P2.buffer_size) .. \"/1512\")\n" +
+    "			gui.text(10,272, \"Frames Held: \" .. tostring(P2.fcnt + 1) .. \"/512\")\n" +
+    "			P2.currInput = captureInput(get_joypad(2), 10, 252)\n" +
+    "\n" +
+    "			\n" +
+    "			if (not P2.first) then\n" +
+    "\n" +
+    "				local inc_cnt = false\n" +
+    "				if P2.currInput == P2.previousFrame and P2.fcnt < 0x1FF then\n" +
+    "					inc_cnt = true\n" +
+    "				end\n" +
+    "\n" +
+    "\n" +
+    "				if inc_cnt then\n" +
+    "					P2.fcnt = P2.fcnt + 1\n" +
+    "				else\n" +
+    "					--Different input, update previous frame, save to buffer and reset frame counter\n" +
+    "					P2.inputBuffer = P2.inputBuffer .. tostring(P2.fcnt) .. P2.previousFrame .. \"\\n\"\n" +
+    "					P2.fcnt = 0\n" +
+    "					P2.buffer_size = P2.buffer_size + 2\n" +
+    "				end\n" +
+    "\n" +
+    "				\n" +
+    "\n" +
+    "				if P2.buffer_size >= 0x5e8 then\n" +
+    "					P2.active = false\n" +
+    "				end\n" +
+    "			else\n" +
+    "				if P2.b_first then\n" +
+    "					P2.b_first = false\n" +
+    "				else\n" +
+    "					P2.first = false\n" +
+    "				end\n" +
+    "			end\n" +
+    "\n" +
+    "			P2.previousFrame = P2.currInput\n" +
+    "		else\n" +
+    "			if p2_active then\n" +
+    "				P2_time_d = read_byte(0x7e0100 + 1)\n" +
+    "				P2_time_s = read_byte(0x7e0100 + 2)\n" +
+    "				P2_time_m = read_byte(0x7e0100 + 4)\n" +
+    "			end\n" +
+    "		end\n" +
+    "\n" +
+    "		UPDATE()\n" +
+            "\n" +
+    "	end\n" +
+    "\n" +
+    "\n" +
+        "\n" +
+    "	--capture final input\n" +
+    "	P1.inputBuffer = P1.inputBuffer .. tostring(P1.fcnt) .. P1.currInput ..\"\\n\"\n" +
+    "	P2.inputBuffer = P2.inputBuffer .. tostring(P2.fcnt) .. P2.currInput ..\"\\n\"\n" +
+    "\n" +
+    "\n" +
+    "	--P1_time_d = read_byte(0x7e10f2 + 1)\n" +
+    "	--P1_time_s = read_byte(0x7e10f2 + 2)\n" +
+    "	--P1_time_m = read_byte(0x7e10f2 + 4)\n" +
+    "\n" +
+    "\n" +
+    "	--P2_time_d = read_byte(0x7e11f2 + 1)\n" +
+    "	--P2_time_s = read_byte(0x7e11f2 + 2)\n" +
+    "	--P2_time_m = read_byte(0x7e11f2 + 4)\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "	if P1.file ~= nil then\n" +
+    "		header.kart_type = P1_kart\n" +
+    "		header.time = {P1_time_d, P1_time_s, P1_time_m} \n" +
+    "\n" +
+    "		P1.file:write(headerToString(header))\n" +
+    "		P1.file:write(P1.inputBuffer)\n" +
+    "		P1.file:close()\n" +
+    "	end\n" +
+    "\n" +
+    "	if P2.file ~= nil then\n" +
+    "		header.kart_type = P2_kart\n" +
+    "		header.time = {P2_time_d, P2_time_s, P2_time_m}\n" +
+    "\n" +
+    "		P2.file:write(headerToString(header))\n" +
+    "		P2.file:write(P2.inputBuffer)\n" +
+    "		P2.file:close()\n" +
+    "	end\n" +
+    "\n" +
+    "	READY = false\n" +
+    "	P1.active = false\n" +
+    "	P2.active = false\n" +
+    "	P1.ready = false\n" +
+    "	P2.ready = false\n" +
+    "\n" +
+    "end");
+                string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                //This will strip just the working path name:
+                //C:\Program Files\MyApplication
+                string strWorkPath = System.IO.Path.GetDirectoryName(strExeFilePath);
+                string strSettingsXmlFilePath = System.IO.Path.Combine(strWorkPath, "demomaker.lua");
+                rtb.AppendText("Generated LUA scipt, "+ strSettingsXmlFilePath +", use with BizHawk 2.3 BSNES or SNES9x cores\n");
+            }
+            catch(Exception)
+            { rtb.AppendText("Failed to generate LUA scipt"); }
+
         }
-
-        private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-
     }
 }

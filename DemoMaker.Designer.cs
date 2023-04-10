@@ -29,19 +29,19 @@ namespace SMKToolbox
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle53 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle54 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle55 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle56 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle57 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle58 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle59 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle60 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle61 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle62 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle63 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle64 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle65 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle40 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle41 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle42 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle43 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle44 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle45 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle46 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle47 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle48 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle49 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle50 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle51 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle52 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,7 +91,8 @@ namespace SMKToolbox
             this.radioButton8 = new System.Windows.Forms.RadioButton();
             this.buttonInsert = new System.Windows.Forms.Button();
             this.buttonExport = new System.Windows.Forms.Button();
-            this.Info = new System.Windows.Forms.RichTextBox();
+            this.rtb = new System.Windows.Forms.RichTextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -123,7 +124,7 @@ namespace SMKToolbox
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 26);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(118, 26);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -172,8 +173,8 @@ namespace SMKToolbox
             // 
             // Line
             // 
-            dataGridViewCellStyle53.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.Line.DefaultCellStyle = dataGridViewCellStyle53;
+            dataGridViewCellStyle40.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.Line.DefaultCellStyle = dataGridViewCellStyle40;
             this.Line.HeaderText = "CSV Line";
             this.Line.Name = "Line";
             this.Line.ReadOnly = true;
@@ -181,8 +182,8 @@ namespace SMKToolbox
             // 
             // Frames
             // 
-            dataGridViewCellStyle54.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Frames.DefaultCellStyle = dataGridViewCellStyle54;
+            dataGridViewCellStyle41.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Frames.DefaultCellStyle = dataGridViewCellStyle41;
             this.Frames.HeaderText = "Frames";
             this.Frames.Name = "Frames";
             this.Frames.ReadOnly = true;
@@ -190,8 +191,8 @@ namespace SMKToolbox
             // 
             // SecondsNTSC
             // 
-            dataGridViewCellStyle55.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.SecondsNTSC.DefaultCellStyle = dataGridViewCellStyle55;
+            dataGridViewCellStyle42.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.SecondsNTSC.DefaultCellStyle = dataGridViewCellStyle42;
             this.SecondsNTSC.HeaderText = "Seconds";
             this.SecondsNTSC.Name = "SecondsNTSC";
             this.SecondsNTSC.ReadOnly = true;
@@ -199,8 +200,8 @@ namespace SMKToolbox
             // 
             // SecondsPAL
             // 
-            dataGridViewCellStyle56.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.SecondsPAL.DefaultCellStyle = dataGridViewCellStyle56;
+            dataGridViewCellStyle43.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.SecondsPAL.DefaultCellStyle = dataGridViewCellStyle43;
             this.SecondsPAL.HeaderText = "Seconds";
             this.SecondsPAL.Name = "SecondsPAL";
             this.SecondsPAL.Visible = false;
@@ -208,8 +209,8 @@ namespace SMKToolbox
             // 
             // Right
             // 
-            dataGridViewCellStyle57.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Right.DefaultCellStyle = dataGridViewCellStyle57;
+            dataGridViewCellStyle44.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Right.DefaultCellStyle = dataGridViewCellStyle44;
             this.Right.HeaderText = "Right";
             this.Right.Name = "Right";
             this.Right.ReadOnly = true;
@@ -217,8 +218,8 @@ namespace SMKToolbox
             // 
             // Left
             // 
-            dataGridViewCellStyle58.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Left.DefaultCellStyle = dataGridViewCellStyle58;
+            dataGridViewCellStyle45.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Left.DefaultCellStyle = dataGridViewCellStyle45;
             this.Left.HeaderText = "Left";
             this.Left.Name = "Left";
             this.Left.ReadOnly = true;
@@ -226,8 +227,8 @@ namespace SMKToolbox
             // 
             // A
             // 
-            dataGridViewCellStyle59.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.A.DefaultCellStyle = dataGridViewCellStyle59;
+            dataGridViewCellStyle46.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.A.DefaultCellStyle = dataGridViewCellStyle46;
             this.A.HeaderText = "A";
             this.A.Name = "A";
             this.A.ReadOnly = true;
@@ -235,8 +236,8 @@ namespace SMKToolbox
             // 
             // B
             // 
-            dataGridViewCellStyle60.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.B.DefaultCellStyle = dataGridViewCellStyle60;
+            dataGridViewCellStyle47.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.B.DefaultCellStyle = dataGridViewCellStyle47;
             this.B.HeaderText = "B";
             this.B.Name = "B";
             this.B.ReadOnly = true;
@@ -244,8 +245,8 @@ namespace SMKToolbox
             // 
             // Y
             // 
-            dataGridViewCellStyle61.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Y.DefaultCellStyle = dataGridViewCellStyle61;
+            dataGridViewCellStyle48.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Y.DefaultCellStyle = dataGridViewCellStyle48;
             this.Y.HeaderText = "Y";
             this.Y.Name = "Y";
             this.Y.ReadOnly = true;
@@ -253,8 +254,8 @@ namespace SMKToolbox
             // 
             // RT
             // 
-            dataGridViewCellStyle62.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.RT.DefaultCellStyle = dataGridViewCellStyle62;
+            dataGridViewCellStyle49.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.RT.DefaultCellStyle = dataGridViewCellStyle49;
             this.RT.HeaderText = "RT";
             this.RT.Name = "RT";
             this.RT.ReadOnly = true;
@@ -262,8 +263,8 @@ namespace SMKToolbox
             // 
             // LT
             // 
-            dataGridViewCellStyle63.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.LT.DefaultCellStyle = dataGridViewCellStyle63;
+            dataGridViewCellStyle50.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.LT.DefaultCellStyle = dataGridViewCellStyle50;
             this.LT.HeaderText = "LT";
             this.LT.Name = "LT";
             this.LT.ReadOnly = true;
@@ -271,8 +272,8 @@ namespace SMKToolbox
             // 
             // Start
             // 
-            dataGridViewCellStyle64.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Start.DefaultCellStyle = dataGridViewCellStyle64;
+            dataGridViewCellStyle51.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Start.DefaultCellStyle = dataGridViewCellStyle51;
             this.Start.HeaderText = "Start";
             this.Start.Name = "Start";
             this.Start.ReadOnly = true;
@@ -280,8 +281,8 @@ namespace SMKToolbox
             // 
             // BinaryValue
             // 
-            dataGridViewCellStyle65.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.BinaryValue.DefaultCellStyle = dataGridViewCellStyle65;
+            dataGridViewCellStyle52.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.BinaryValue.DefaultCellStyle = dataGridViewCellStyle52;
             this.BinaryValue.HeaderText = "Binary Value";
             this.BinaryValue.Name = "BinaryValue";
             this.BinaryValue.ReadOnly = true;
@@ -320,25 +321,26 @@ namespace SMKToolbox
             this.HexMode2.TabIndex = 12;
             this.HexMode2.Text = "Hexadecimal";
             this.HexMode2.UseVisualStyleBackColor = true;
+            this.HexMode2.CheckedChanged += new System.EventHandler(this.HexMode2_CheckedChanged);
             // 
             // Offset
             // 
             this.Offset.Enabled = false;
-            this.Offset.Location = new System.Drawing.Point(153, 278);
+            this.Offset.Location = new System.Drawing.Point(132, 278);
             this.Offset.Maximum = new decimal(new int[] {
             4194304,
             0,
             0,
             0});
             this.Offset.Name = "Offset";
-            this.Offset.Size = new System.Drawing.Size(75, 24);
+            this.Offset.Size = new System.Drawing.Size(96, 24);
             this.Offset.TabIndex = 11;
             this.Offset.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(99, 280);
+            this.label2.Location = new System.Drawing.Point(78, 280);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(48, 18);
             this.label2.TabIndex = 10;
@@ -347,7 +349,7 @@ namespace SMKToolbox
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(67, 250);
+            this.label1.Location = new System.Drawing.Point(46, 250);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(80, 18);
             this.label1.TabIndex = 9;
@@ -362,6 +364,7 @@ namespace SMKToolbox
             this.HexMode.TabIndex = 8;
             this.HexMode.Text = "Hexadecimal";
             this.HexMode.UseVisualStyleBackColor = true;
+            this.HexMode.CheckedChanged += new System.EventHandler(this.HexMode_CheckedChanged);
             // 
             // BufferSize
             // 
@@ -371,14 +374,14 @@ namespace SMKToolbox
             0,
             0,
             0});
-            this.BufferSize.Location = new System.Drawing.Point(153, 248);
+            this.BufferSize.Location = new System.Drawing.Point(132, 248);
             this.BufferSize.Maximum = new decimal(new int[] {
             2000,
             0,
             0,
             0});
             this.BufferSize.Name = "BufferSize";
-            this.BufferSize.Size = new System.Drawing.Size(75, 24);
+            this.BufferSize.Size = new System.Drawing.Size(96, 24);
             this.BufferSize.TabIndex = 7;
             this.BufferSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -392,6 +395,7 @@ namespace SMKToolbox
             this.radioButton7.TabStop = true;
             this.radioButton7.Text = "Custom Size and Offset (Advanced Users Only)";
             this.radioButton7.UseVisualStyleBackColor = true;
+            this.radioButton7.CheckedChanged += new System.EventHandler(this.radioButton7_CheckedChanged);
             // 
             // radioButton6
             // 
@@ -414,6 +418,7 @@ namespace SMKToolbox
             this.radioButton5.TabStop = true;
             this.radioButton5.Text = "Toad (Demo #4)";
             this.radioButton5.UseVisualStyleBackColor = true;
+            this.radioButton5.CheckedChanged += new System.EventHandler(this.radioButton5_CheckedChanged);
             // 
             // radioButton4
             // 
@@ -425,6 +430,7 @@ namespace SMKToolbox
             this.radioButton4.TabStop = true;
             this.radioButton4.Text = "Princess  (Demo #3)";
             this.radioButton4.UseVisualStyleBackColor = true;
+            this.radioButton4.CheckedChanged += new System.EventHandler(this.radioButton4_CheckedChanged);
             // 
             // radioButton3
             // 
@@ -436,6 +442,7 @@ namespace SMKToolbox
             this.radioButton3.TabStop = true;
             this.radioButton3.Text = "D.K. J.r.  (Demo #2)";
             this.radioButton3.UseVisualStyleBackColor = true;
+            this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
             // 
             // radioButton2
             // 
@@ -459,6 +466,7 @@ namespace SMKToolbox
             this.radioButton1.TabStop = true;
             this.radioButton1.Text = "Mario (Demo #1)";
             this.radioButton1.UseVisualStyleBackColor = true;
+            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
             // 
             // groupBox2
             // 
@@ -585,9 +593,9 @@ namespace SMKToolbox
             this.groupBox3.Controls.Add(this.radioButton9);
             this.groupBox3.Controls.Add(this.radioButton8);
             this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox3.Location = new System.Drawing.Point(1332, 29);
+            this.groupBox3.Location = new System.Drawing.Point(1340, 29);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(213, 149);
+            this.groupBox3.Size = new System.Drawing.Size(198, 149);
             this.groupBox3.TabIndex = 24;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Region Mode";
@@ -603,6 +611,7 @@ namespace SMKToolbox
             this.radioButton9.TabStop = true;
             this.radioButton9.Text = "PAL (50Hz)";
             this.radioButton9.UseVisualStyleBackColor = true;
+            this.radioButton9.CheckedChanged += new System.EventHandler(this.radioButton9_CheckedChanged);
             // 
             // radioButton8
             // 
@@ -615,46 +624,62 @@ namespace SMKToolbox
             this.radioButton8.TabStop = true;
             this.radioButton8.Text = "NTSC (60Hz)";
             this.radioButton8.UseVisualStyleBackColor = true;
+            this.radioButton8.CheckedChanged += new System.EventHandler(this.radioButton8_CheckedChanged);
             // 
             // buttonInsert
             // 
             this.buttonInsert.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.buttonInsert.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonInsert.Location = new System.Drawing.Point(1332, 302);
+            this.buttonInsert.Location = new System.Drawing.Point(1340, 303);
             this.buttonInsert.Name = "buttonInsert";
-            this.buttonInsert.Size = new System.Drawing.Size(213, 32);
+            this.buttonInsert.Size = new System.Drawing.Size(198, 32);
             this.buttonInsert.TabIndex = 27;
             this.buttonInsert.Text = "Insert Demo to ROM";
             this.buttonInsert.UseVisualStyleBackColor = true;
+            this.buttonInsert.Click += new System.EventHandler(this.buttonInsert_Click);
             // 
             // buttonExport
             // 
             this.buttonExport.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.buttonExport.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonExport.Location = new System.Drawing.Point(1332, 264);
+            this.buttonExport.Location = new System.Drawing.Point(1340, 265);
             this.buttonExport.Name = "buttonExport";
-            this.buttonExport.Size = new System.Drawing.Size(213, 32);
+            this.buttonExport.Size = new System.Drawing.Size(198, 32);
             this.buttonExport.TabIndex = 26;
             this.buttonExport.Text = "Export Demo Binary";
             this.buttonExport.UseVisualStyleBackColor = true;
+            this.buttonExport.Click += new System.EventHandler(this.buttonExport_Click);
             // 
-            // Info
+            // rtb
             // 
-            this.Info.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.rtb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.Info.BackColor = System.Drawing.SystemColors.Info;
-            this.Info.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Info.Location = new System.Drawing.Point(749, 363);
-            this.Info.Name = "Info";
-            this.Info.Size = new System.Drawing.Size(796, 250);
-            this.Info.TabIndex = 25;
-            this.Info.Text = "";
+            this.rtb.BackColor = System.Drawing.SystemColors.Info;
+            this.rtb.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rtb.Location = new System.Drawing.Point(749, 363);
+            this.rtb.Name = "rtb";
+            this.rtb.Size = new System.Drawing.Size(796, 250);
+            this.rtb.TabIndex = 25;
+            this.rtb.Text = "";
+            // 
+            // button1
+            // 
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(1340, 226);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(198, 32);
+            this.button1.TabIndex = 28;
+            this.button1.Text = "Create LUA script";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // DemoMaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1550, 625);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.groupBox1);
@@ -662,7 +687,7 @@ namespace SMKToolbox
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.buttonInsert);
             this.Controls.Add(this.buttonExport);
-            this.Controls.Add(this.Info);
+            this.Controls.Add(this.rtb);
             this.Name = "DemoMaker";
             this.Text = "DemoMaker";
             this.menuStrip1.ResumeLayout(false);
@@ -732,6 +757,7 @@ namespace SMKToolbox
         private System.Windows.Forms.RadioButton radioButton8;
         private System.Windows.Forms.Button buttonInsert;
         private System.Windows.Forms.Button buttonExport;
-        private System.Windows.Forms.RichTextBox Info;
+        private System.Windows.Forms.RichTextBox rtb;
+        private System.Windows.Forms.Button button1;
     }
 }
