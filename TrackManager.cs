@@ -272,7 +272,7 @@ namespace SMKToolbox
 
                 Color[] pal = convertAllARGB(colpal.Item1);
 
-                TM_CourseEditor ce = new TM_CourseEditor(m72d, theme, pal, 128, 128, (TM_CourseEditor.trackEditorParams.AllowCopying | TM_CourseEditor.trackEditorParams.AllowPasteStashing | TM_CourseEditor.trackEditorParams.ReEnableOwner), this);
+                TM_CourseEditor ce = new TM_CourseEditor(m72d, theme, pal, 128, 128, (TM_CourseEditor.trackEditorParams.AllowCopying | TM_CourseEditor.trackEditorParams.AllowPasteStashing | TM_CourseEditor.trackEditorParams.ReEnableOwner), this, screenPath);
                 ce.Show();
 
                 Enabled = false;

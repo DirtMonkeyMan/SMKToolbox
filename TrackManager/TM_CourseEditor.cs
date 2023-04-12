@@ -62,6 +62,7 @@ namespace SMKToolbox
         private Form parentForm;
         private TM_CourseEditor receiverForm;
         private int modifyDepth = 0;
+        private string saveLoc = null;
 
         private struct UndoCoord
         {
@@ -384,7 +385,7 @@ namespace SMKToolbox
             realInit(useTrack, useTheme, usePalette, width, height, parameters);
         }
 
-        public TM_CourseEditor(byte[,] useTrack, trackTheme2d useTheme, Color[] usePalette, int width, int height, trackEditorParams parameters, Form owner)
+        public TM_CourseEditor(byte[,] useTrack, trackTheme2d useTheme, Color[] usePalette, int width, int height, trackEditorParams parameters, Form owner, string savePath)
         {
             if ((width < 1) | (height < 1))
             {
@@ -903,28 +904,65 @@ namespace SMKToolbox
                     }
                 }
 
-                if (dr == DialogResult.Yes) saveChanges();
+                if (dr == DialogResult.Yes) saveLoc = saveChanges(saveLoc, autoCompressSettings.AskBeforeCompress);
             }
         }
 
-        private void saveChanges()
+        private (string, DialogResult) makeSaveDialog(string additionalFilters)
         {
-            modifyDepth = 0;
-            if (undoHistory.Count > 0) undoHistory.RemoveRange(0, undoHistory.Count);
-            if (redoHistory.Count > 0) redoHistory.RemoveRange(0, redoHistory.Count);
+            SaveFileDialog sfd = new SaveFileDialog
+            {
+                InitialDirectory = Application.StartupPath,
+                Filter = "All Files (*.*)|*.*",
+                FilterIndex = 2,
+                RestoreDirectory = true
+            };
 
+            if (additionalFilters != null)
+            {
+                sfd.Filter += '|' + additionalFilters;
+            }
+
+            (string, DialogResult) output;
+            output.Item1 = null;
+            output.Item2 = sfd.ShowDialog();
+
+            if (output.Item2 == DialogResult.OK)
+            {
+                output.Item1 = sfd.FileName;
+            }
+
+            return output;
+        }
+
+        private string saveChanges(string filename, autoCompressSettings acs)
+        {
             if ((param & trackEditorParams.TransferPaste) == 0)
             {
+                if (filename == null)
+                {
+                    (string, DialogResult) sd = makeSaveDialog("Mode 7 Screens (*.SCR)|*.SCR");
+                    if (sd.Item2 == DialogResult.Cancel) return filename;
+                    filename = sd.Item1;
+                }
 
+                modifyDepth = 0;
+                if (undoHistory.Count > 0) undoHistory.RemoveRange(0, undoHistory.Count);
+                if (redoHistory.Count > 0) redoHistory.RemoveRange(0, redoHistory.Count);
+
+                writeLayoutToFile(filename, acs);
             }
             else
             {
                 if (receiverForm != null)
                 {
                     receiverForm.receiveTiles(layout, receiveMode.CopyToPaste);
+                    modifyDepth = 0;
                     Close();
                 }
             }
+
+            return filename;
         }
 
         private byte[] convert2dTo1d(byte[,] input)
@@ -953,16 +991,14 @@ namespace SMKToolbox
         private string replaceExtension(string instr, string extension)
         {
             int trim;
-            List<char> inchr = instr.ToCharArray().ToList();
 
-            for (trim = inchr.Count - 1; trim >= 0; trim--)
+            for (trim = instr.Length - 1; trim >= 0; trim--)
             {
-                if (inchr[trim] == '.') break;
+                if (instr[trim] == '.') break;
             }
 
-            if (trim >= 0) inchr.RemoveRange(trim, inchr.Count - trim);
+            if (trim >= 0) instr = instr.Substring(0, trim) + extension; else instr += '.' + extension;
 
-            instr = inchr.ToArray().ToString() + extension;
             return instr;
         }
 
@@ -972,14 +1008,18 @@ namespace SMKToolbox
             if (settings != autoCompressSettings.OnlyCompress) Files.Write(file, trackRaw, false);
             if (settings != autoCompressSettings.DontCompress)
             {
-                string compExt = replaceExtension(file, ".sss");
+                string compExt;
+
+                if (settings == autoCompressSettings.OnlyCompress) compExt = file; else compExt = replaceExtension(file, ".sss"); ;
 
                 if (settings == autoCompressSettings.AskBeforeCompress)
                 {
-                    if (MessageBox.Show("Compress to "+compExt+"?", "Save", MessageBoxButtons.YesNo) == DialogResult.No) goto skipCompress;
+                    if (MessageBox.Show("Compress to "+compExt+"?", "Save", MessageBoxButtons.YesNo) == DialogResult.No) return;
                 }
 
-            skipCompress:;
+                (byte[], bool) trackComp = Files.DoubleCompress(trackRaw);
+
+                if (trackComp.Item2) Files.Write(compExt, trackComp.Item1, false);
             }
         }
 
@@ -1007,26 +1047,48 @@ namespace SMKToolbox
         private void saveMenuClick(object sender, EventArgs e)
         {
             MenuItem mi = (MenuItem)sender;
+            (string, DialogResult) sfr;
+
             switch (mi.Index)
             {
                 case 0:
-                    
+                    saveLoc = saveChanges(saveLoc, autoCompressSettings.AskBeforeCompress);
                     break;
 
                 case 1:
-                    SaveFileDialog sfd = new SaveFileDialog
-                    {
-                        InitialDirectory = Application.StartupPath,
-                        Filter = "All Files (*.*)|*.*|Mode 7 Screens (*.SCR)|*.SCR",
-                        FilterIndex = 2,
-                        RestoreDirectory = true
-                    };
+                    sfr = makeSaveDialog("Mode 7 Screens (*.SCR)|*.SCR");
+                    if (sfr.Item2 == DialogResult.OK) saveLoc = saveChanges(sfr.Item1, autoCompressSettings.AskBeforeCompress);
+                    break;
 
-                    if (sfd.ShowDialog() == DialogResult.OK)
-                    {
+                case 2:
+                    saveLoc = saveChanges(saveLoc, autoCompressSettings.DontCompress);
+                    break;
 
+                case 3:
+                    sfr = makeSaveDialog("Mode 7 Screens (*.SCR)|*.SCR");
+                    if (sfr.Item2 == DialogResult.OK) saveLoc = saveChanges(sfr.Item1, autoCompressSettings.DontCompress);
+                    break;
+
+                case 4:
+                    sfr = makeSaveDialog("Compressed M7 Screens (*.sss)|*.sss");
+                    if (sfr.Item2 == DialogResult.OK) writeLayoutToFile(sfr.Item1, autoCompressSettings.OnlyCompress);
+                    break;
+
+                case 5:
+                    try
+                    {
+                        sfr = makeSaveDialog("Portable Network Graphics (*.png)|*.png");
+
+                        if (sfr.Item2 == DialogResult.OK) trkBuffer.Save(sfr.Item1);
                     }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error while saving track bitmap.\n" + ex.Message);
+                    }
+                    break;
 
+                case 6:
+                    Clipboard.SetDataObject(trkBuffer);
                     break;
             }
         }
@@ -1037,10 +1099,10 @@ namespace SMKToolbox
             switch (me.Button)
             {
                 case MouseButtons.Left:
-                    saveChanges();
+                    saveLoc = saveChanges(saveLoc, autoCompressSettings.AskBeforeCompress);
                     break;
                 case MouseButtons.Right:
-                    if ((param & trackEditorParams.TransferPaste) != 0)
+                    if ((param & trackEditorParams.TransferPaste) == 0)
                     {
                         MenuItem[] mi = new MenuItem[] {
                             new MenuItem("Save and Compress (Default)"),
