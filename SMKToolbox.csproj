@@ -83,6 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ASMReading.cs" />
     <Compile Include="AssetManager.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -143,6 +144,7 @@
     <Compile Include="TrackManager.Designer.cs">
       <DependentUpon>TrackManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="TrackManager\Overlay.cs" />
     <Compile Include="TrackManager\TM_CourseEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -217,5 +219,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

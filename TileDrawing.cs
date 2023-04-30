@@ -272,7 +272,7 @@ namespace SMKToolbox
         Outputs:
             A bitmap to be displayed by a Picture Box or a textured brush.
         */
-        public static Bitmap initBuffer(byte[,] tilemap, Bitmap buffer, Color[] palette, trackTheme2d theme)
+        public static Bitmap initBuffer(byte[,] tilemap, Bitmap buffer, Color[] palette, trackTheme2d theme, bool drawFF)
         {
             if (tilemap == null) throw new System.Exception("The tilemap buffer is null.");
 
@@ -295,6 +295,8 @@ namespace SMKToolbox
             int tx;
             int ty = 0;
 
+            byte ct;
+
             for (py = 0; py < ly; py++)
             {
                 gx = 0;
@@ -302,7 +304,8 @@ namespace SMKToolbox
 
                 for (px = 0; px < lx; px++)
                 {
-                    buffer.SetPixel(px, py, palette[theme.tile[tilemap[tx, ty]].graphics[gx, gy]]);
+                    ct = tilemap[tx, ty];
+                    if ((ct != 0xFF) | drawFF) buffer.SetPixel(px, py, palette[theme.tile[ct].graphics[gx, gy]]);
 
                     gx++;
                     tx += gx / 8;

@@ -39,6 +39,7 @@ namespace SMKToolbox
             this.tabFullSet = new System.Windows.Forms.TabPage();
             this.pictureTileSelect = new System.Windows.Forms.PictureBox();
             this.tabPieces = new System.Windows.Forms.TabPage();
+            this.checkAvoidFF = new System.Windows.Forms.CheckBox();
             this.buttonEditPaste = new System.Windows.Forms.Button();
             this.buttonUsePaste = new System.Windows.Forms.Button();
             this.buttonDeletePaste = new System.Windows.Forms.Button();
@@ -49,8 +50,21 @@ namespace SMKToolbox
             this.panelPasteDisplay = new System.Windows.Forms.Panel();
             this.picturePasteDisplay = new System.Windows.Forms.PictureBox();
             this.labelSelectPaste = new System.Windows.Forms.Label();
+            this.tabOverlay = new System.Windows.Forms.TabPage();
+            this.labelOverlayCapacity = new System.Windows.Forms.Label();
+            this.buttonPlaceOverlay = new System.Windows.Forms.Button();
+            this.buttonOverlayChange = new System.Windows.Forms.Button();
+            this.buttonResetRotation = new System.Windows.Forms.Button();
+            this.buttonRotateCounterClockwise = new System.Windows.Forms.Button();
+            this.buttonRotateClockwise = new System.Windows.Forms.Button();
+            this.panelOverlayContainer = new System.Windows.Forms.Panel();
+            this.pictureOvrTilePreview = new System.Windows.Forms.PictureBox();
+            this.numericOverlaySize = new System.Windows.Forms.NumericUpDown();
+            this.labelOverlaySize = new System.Windows.Forms.Label();
+            this.numericOverlayPattern = new System.Windows.Forms.NumericUpDown();
+            this.labelOverlayPattern = new System.Windows.Forms.Label();
             this.buttonSave = new System.Windows.Forms.Button();
-            this.checkAvoidFF = new System.Windows.Forms.CheckBox();
+            this.buttonSaveAdv = new System.Windows.Forms.Button();
             this.panelTrackEditor.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureTrackDisplay)).BeginInit();
             this.tabFunctions.SuspendLayout();
@@ -59,11 +73,16 @@ namespace SMKToolbox
             this.tabPieces.SuspendLayout();
             this.panelPasteDisplay.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picturePasteDisplay)).BeginInit();
+            this.tabOverlay.SuspendLayout();
+            this.panelOverlayContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureOvrTilePreview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericOverlaySize)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericOverlayPattern)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonZoomIn
             // 
-            this.buttonZoomIn.Location = new System.Drawing.Point(165, 13);
+            this.buttonZoomIn.Location = new System.Drawing.Point(313, 13);
             this.buttonZoomIn.Name = "buttonZoomIn";
             this.buttonZoomIn.Size = new System.Drawing.Size(75, 23);
             this.buttonZoomIn.TabIndex = 1;
@@ -73,7 +92,7 @@ namespace SMKToolbox
             // 
             // buttonZoomOut
             // 
-            this.buttonZoomOut.Location = new System.Drawing.Point(247, 13);
+            this.buttonZoomOut.Location = new System.Drawing.Point(395, 13);
             this.buttonZoomOut.Name = "buttonZoomOut";
             this.buttonZoomOut.Size = new System.Drawing.Size(75, 23);
             this.buttonZoomOut.TabIndex = 2;
@@ -106,7 +125,7 @@ namespace SMKToolbox
             // 
             // buttonUndo
             // 
-            this.buttonUndo.Location = new System.Drawing.Point(394, 13);
+            this.buttonUndo.Location = new System.Drawing.Point(542, 13);
             this.buttonUndo.Name = "buttonUndo";
             this.buttonUndo.Size = new System.Drawing.Size(75, 23);
             this.buttonUndo.TabIndex = 5;
@@ -116,7 +135,7 @@ namespace SMKToolbox
             // 
             // buttonRedo
             // 
-            this.buttonRedo.Location = new System.Drawing.Point(475, 13);
+            this.buttonRedo.Location = new System.Drawing.Point(623, 13);
             this.buttonRedo.Name = "buttonRedo";
             this.buttonRedo.Size = new System.Drawing.Size(75, 23);
             this.buttonRedo.TabIndex = 6;
@@ -128,11 +147,13 @@ namespace SMKToolbox
             // 
             this.tabFunctions.Controls.Add(this.tabFullSet);
             this.tabFunctions.Controls.Add(this.tabPieces);
+            this.tabFunctions.Controls.Add(this.tabOverlay);
             this.tabFunctions.Location = new System.Drawing.Point(847, 43);
             this.tabFunctions.Name = "tabFunctions";
             this.tabFunctions.SelectedIndex = 0;
             this.tabFunctions.Size = new System.Drawing.Size(149, 674);
             this.tabFunctions.TabIndex = 7;
+            this.tabFunctions.SelectedIndexChanged += new System.EventHandler(this.tabModeChange);
             // 
             // tabFullSet
             // 
@@ -177,6 +198,16 @@ namespace SMKToolbox
             this.tabPieces.Text = "Combo Meals";
             this.tabPieces.ToolTipText = "Saved clipboard pieces that you can edit.";
             this.tabPieces.UseVisualStyleBackColor = true;
+            // 
+            // checkAvoidFF
+            // 
+            this.checkAvoidFF.AutoSize = true;
+            this.checkAvoidFF.Location = new System.Drawing.Point(7, 170);
+            this.checkAvoidFF.Name = "checkAvoidFF";
+            this.checkAvoidFF.Size = new System.Drawing.Size(103, 17);
+            this.checkAvoidFF.TabIndex = 9;
+            this.checkAvoidFF.Text = "Avoid 0xFF tiles.";
+            this.checkAvoidFF.UseVisualStyleBackColor = true;
             // 
             // buttonEditPaste
             // 
@@ -279,6 +310,148 @@ namespace SMKToolbox
             this.labelSelectPaste.TabIndex = 0;
             this.labelSelectPaste.Text = "Select Paste";
             // 
+            // tabOverlay
+            // 
+            this.tabOverlay.Controls.Add(this.labelOverlayCapacity);
+            this.tabOverlay.Controls.Add(this.buttonPlaceOverlay);
+            this.tabOverlay.Controls.Add(this.buttonOverlayChange);
+            this.tabOverlay.Controls.Add(this.buttonResetRotation);
+            this.tabOverlay.Controls.Add(this.buttonRotateCounterClockwise);
+            this.tabOverlay.Controls.Add(this.buttonRotateClockwise);
+            this.tabOverlay.Controls.Add(this.panelOverlayContainer);
+            this.tabOverlay.Controls.Add(this.numericOverlaySize);
+            this.tabOverlay.Controls.Add(this.labelOverlaySize);
+            this.tabOverlay.Controls.Add(this.numericOverlayPattern);
+            this.tabOverlay.Controls.Add(this.labelOverlayPattern);
+            this.tabOverlay.Location = new System.Drawing.Point(4, 22);
+            this.tabOverlay.Name = "tabOverlay";
+            this.tabOverlay.Padding = new System.Windows.Forms.Padding(3);
+            this.tabOverlay.Size = new System.Drawing.Size(141, 648);
+            this.tabOverlay.TabIndex = 2;
+            this.tabOverlay.Text = "Toppings";
+            this.tabOverlay.UseVisualStyleBackColor = true;
+            // 
+            // labelOverlayCapacity
+            // 
+            this.labelOverlayCapacity.AutoSize = true;
+            this.labelOverlayCapacity.Location = new System.Drawing.Point(9, 149);
+            this.labelOverlayCapacity.Name = "labelOverlayCapacity";
+            this.labelOverlayCapacity.Size = new System.Drawing.Size(83, 13);
+            this.labelOverlayCapacity.TabIndex = 11;
+            this.labelOverlayCapacity.Text = "Capacity: 0 / 41";
+            // 
+            // buttonPlaceOverlay
+            // 
+            this.buttonPlaceOverlay.Location = new System.Drawing.Point(6, 119);
+            this.buttonPlaceOverlay.Name = "buttonPlaceOverlay";
+            this.buttonPlaceOverlay.Size = new System.Drawing.Size(129, 23);
+            this.buttonPlaceOverlay.TabIndex = 10;
+            this.buttonPlaceOverlay.Text = "Place Piece";
+            this.buttonPlaceOverlay.UseVisualStyleBackColor = true;
+            this.buttonPlaceOverlay.Click += new System.EventHandler(this.buttonPlaceOverlay_Click);
+            // 
+            // buttonOverlayChange
+            // 
+            this.buttonOverlayChange.Location = new System.Drawing.Point(6, 89);
+            this.buttonOverlayChange.Name = "buttonOverlayChange";
+            this.buttonOverlayChange.Size = new System.Drawing.Size(129, 23);
+            this.buttonOverlayChange.TabIndex = 9;
+            this.buttonOverlayChange.Text = "Apply Change";
+            this.buttonOverlayChange.UseVisualStyleBackColor = true;
+            this.buttonOverlayChange.Click += new System.EventHandler(this.buttonOverlayChange_Click);
+            // 
+            // buttonResetRotation
+            // 
+            this.buttonResetRotation.Location = new System.Drawing.Point(36, 59);
+            this.buttonResetRotation.Name = "buttonResetRotation";
+            this.buttonResetRotation.Size = new System.Drawing.Size(70, 23);
+            this.buttonResetRotation.TabIndex = 8;
+            this.buttonResetRotation.Text = "Center";
+            this.buttonResetRotation.UseVisualStyleBackColor = true;
+            this.buttonResetRotation.Click += new System.EventHandler(this.buttonResetRotation_Click);
+            // 
+            // buttonRotateCounterClockwise
+            // 
+            this.buttonRotateCounterClockwise.Location = new System.Drawing.Point(6, 59);
+            this.buttonRotateCounterClockwise.Name = "buttonRotateCounterClockwise";
+            this.buttonRotateCounterClockwise.Size = new System.Drawing.Size(23, 23);
+            this.buttonRotateCounterClockwise.TabIndex = 7;
+            this.buttonRotateCounterClockwise.Text = "L";
+            this.buttonRotateCounterClockwise.UseVisualStyleBackColor = true;
+            this.buttonRotateCounterClockwise.Click += new System.EventHandler(this.buttonRotateCounterClockwise_Click);
+            // 
+            // buttonRotateClockwise
+            // 
+            this.buttonRotateClockwise.Location = new System.Drawing.Point(112, 59);
+            this.buttonRotateClockwise.Name = "buttonRotateClockwise";
+            this.buttonRotateClockwise.Size = new System.Drawing.Size(23, 23);
+            this.buttonRotateClockwise.TabIndex = 6;
+            this.buttonRotateClockwise.Text = "R";
+            this.buttonRotateClockwise.UseVisualStyleBackColor = true;
+            this.buttonRotateClockwise.Click += new System.EventHandler(this.buttonRotateClockwise_Click);
+            // 
+            // panelOverlayContainer
+            // 
+            this.panelOverlayContainer.AutoScroll = true;
+            this.panelOverlayContainer.Controls.Add(this.pictureOvrTilePreview);
+            this.panelOverlayContainer.Location = new System.Drawing.Point(7, 165);
+            this.panelOverlayContainer.Name = "panelOverlayContainer";
+            this.panelOverlayContainer.Size = new System.Drawing.Size(128, 477);
+            this.panelOverlayContainer.TabIndex = 5;
+            // 
+            // pictureOvrTilePreview
+            // 
+            this.pictureOvrTilePreview.Location = new System.Drawing.Point(4, 4);
+            this.pictureOvrTilePreview.Name = "pictureOvrTilePreview";
+            this.pictureOvrTilePreview.Size = new System.Drawing.Size(121, 473);
+            this.pictureOvrTilePreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureOvrTilePreview.TabIndex = 0;
+            this.pictureOvrTilePreview.TabStop = false;
+            // 
+            // numericOverlaySize
+            // 
+            this.numericOverlaySize.Location = new System.Drawing.Point(53, 33);
+            this.numericOverlaySize.Maximum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.numericOverlaySize.Name = "numericOverlaySize";
+            this.numericOverlaySize.Size = new System.Drawing.Size(82, 20);
+            this.numericOverlaySize.TabIndex = 3;
+            this.numericOverlaySize.ValueChanged += new System.EventHandler(this.numericOverlaySize_ValueChanged);
+            // 
+            // labelOverlaySize
+            // 
+            this.labelOverlaySize.AutoSize = true;
+            this.labelOverlaySize.Location = new System.Drawing.Point(6, 35);
+            this.labelOverlaySize.Name = "labelOverlaySize";
+            this.labelOverlaySize.Size = new System.Drawing.Size(27, 13);
+            this.labelOverlaySize.TabIndex = 2;
+            this.labelOverlaySize.Text = "Size";
+            // 
+            // numericOverlayPattern
+            // 
+            this.numericOverlayPattern.Location = new System.Drawing.Point(53, 7);
+            this.numericOverlayPattern.Maximum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.numericOverlayPattern.Name = "numericOverlayPattern";
+            this.numericOverlayPattern.Size = new System.Drawing.Size(82, 20);
+            this.numericOverlayPattern.TabIndex = 1;
+            this.numericOverlayPattern.ValueChanged += new System.EventHandler(this.numericOverlayPattern_ValueChanged);
+            // 
+            // labelOverlayPattern
+            // 
+            this.labelOverlayPattern.AutoSize = true;
+            this.labelOverlayPattern.Location = new System.Drawing.Point(6, 9);
+            this.labelOverlayPattern.Name = "labelOverlayPattern";
+            this.labelOverlayPattern.Size = new System.Drawing.Size(41, 13);
+            this.labelOverlayPattern.TabIndex = 0;
+            this.labelOverlayPattern.Text = "Pattern";
+            // 
             // buttonSave
             // 
             this.buttonSave.Location = new System.Drawing.Point(13, 13);
@@ -287,23 +460,24 @@ namespace SMKToolbox
             this.buttonSave.TabIndex = 8;
             this.buttonSave.Text = "Save";
             this.buttonSave.UseVisualStyleBackColor = true;
-            this.buttonSave.MouseUp += new System.Windows.Forms.MouseEventHandler(this.buttonSave_Click);
+            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
             // 
-            // checkAvoidFF
+            // buttonSaveAdv
             // 
-            this.checkAvoidFF.AutoSize = true;
-            this.checkAvoidFF.Location = new System.Drawing.Point(7, 170);
-            this.checkAvoidFF.Name = "checkAvoidFF";
-            this.checkAvoidFF.Size = new System.Drawing.Size(103, 17);
-            this.checkAvoidFF.TabIndex = 9;
-            this.checkAvoidFF.Text = "Avoid 0xFF tiles.";
-            this.checkAvoidFF.UseVisualStyleBackColor = true;
+            this.buttonSaveAdv.Location = new System.Drawing.Point(95, 13);
+            this.buttonSaveAdv.Name = "buttonSaveAdv";
+            this.buttonSaveAdv.Size = new System.Drawing.Size(75, 23);
+            this.buttonSaveAdv.TabIndex = 9;
+            this.buttonSaveAdv.Text = "Save Adv.";
+            this.buttonSaveAdv.UseVisualStyleBackColor = true;
+            this.buttonSaveAdv.Click += new System.EventHandler(this.buttonSaveAdv_Click);
             // 
             // TM_CourseEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.buttonSaveAdv);
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.tabFunctions);
             this.Controls.Add(this.buttonRedo);
@@ -326,6 +500,12 @@ namespace SMKToolbox
             this.tabPieces.PerformLayout();
             this.panelPasteDisplay.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picturePasteDisplay)).EndInit();
+            this.tabOverlay.ResumeLayout(false);
+            this.tabOverlay.PerformLayout();
+            this.panelOverlayContainer.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureOvrTilePreview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericOverlaySize)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericOverlayPattern)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -353,5 +533,19 @@ namespace SMKToolbox
         private System.Windows.Forms.Button buttonEditPaste;
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.CheckBox checkAvoidFF;
+        private System.Windows.Forms.Button buttonSaveAdv;
+        private System.Windows.Forms.TabPage tabOverlay;
+        private System.Windows.Forms.Panel panelOverlayContainer;
+        private System.Windows.Forms.NumericUpDown numericOverlaySize;
+        private System.Windows.Forms.Label labelOverlaySize;
+        private System.Windows.Forms.NumericUpDown numericOverlayPattern;
+        private System.Windows.Forms.Label labelOverlayPattern;
+        private System.Windows.Forms.PictureBox pictureOvrTilePreview;
+        private System.Windows.Forms.Button buttonResetRotation;
+        private System.Windows.Forms.Button buttonRotateCounterClockwise;
+        private System.Windows.Forms.Button buttonRotateClockwise;
+        private System.Windows.Forms.Label labelOverlayCapacity;
+        private System.Windows.Forms.Button buttonPlaceOverlay;
+        private System.Windows.Forms.Button buttonOverlayChange;
     }
 }

@@ -9,62 +9,132 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Media;
 using static SMKToolbox.TrackManager;
+using static SMKToolbox.Overlay;
+
+#pragma warning disable IDE1006
 
 namespace SMKToolbox
 {
     public partial class TM_OpenDirect : Form
     {
         TrackManager FormOwner;
+        readonly (Label, string)[] tarLabel;
+        readonly Color defColor = DefaultForeColor;
 
         public TM_OpenDirect(TrackManager owner)
         {
             InitializeComponent();
 
+            tarLabel = new (Label, string)[]
+            {
+                (labelMode7Scr, "Mode 7 Screen (Track Layout)"),
+                (labelM7Graphics, "Mode 7 Graphics (Track Tile Graphics)"),
+                (labelColorPalette, "Color Palettes"),
+                (labelCommon, "Common Tiles"),
+                (labelOverlaySource, "Source Code File"),
+                (labelPatternReference, "Pattern Reference Label"),
+                (labelSizeReference, "Size Reference Label"),
+                (labelOverlayDataFile, "Overlay Data")
+            };
+
             FormOwner = owner;
         }
 
-        private void buttonBrowseGeneral_Click(object sender, EventArgs e)
+        private (bool, trackManLoadError[]) validatePaths(List<string> paths)
         {
-            // MessageBox.Show(sender.ToString());
-            string filter;
-            Button bsender = (Button)sender;
-            System.Windows.Forms.TextBox targetTextBox;
+            (bool, trackManLoadError[]) tmle = (true, new trackManLoadError[0]);
 
-            switch (bsender.Text) {
-                case "Browse Screen":
-                    filter = "All Files (*.*)|*.*|Mode 7 Screens (*.SCR)|*.SCR";
-                    targetTextBox = this.textM7ScreenPath;
-                    break;
-                case "Browse Graphics":
-                    filter = "All Files (*.*)|*.*|Mode 7 Graphics (*.CM7)|*.CM7";
-                    targetTextBox = this.textM7Graphics;
-                    break;
-                case "Browse Palette":
-                    filter = "All Files (*.*)|*.*|Color Palettes (*.COL)|*.COL";
-                    targetTextBox = this.textColorPalette;
-                    break;
-                case "Browse Common":
-                    filter = "All Files (*.*)|*.*|Mode 7 Graphics (*.CM7)|*.CM7";
-                    targetTextBox = this.textCommon;
-                    break;
-                default:
-                    filter = "All Files (*.*)|*.*|Super Family Computer ROMs (*.SFC)|*.SFC";
-                    targetTextBox = this.textM7ScreenPath;
-                    break;
+            int i;
+            int j = paths.Count;
+
+            for (i = 0; i < j; i++)
+            {
+                if (paths[i] == null) continue;
+                if (paths[i].Trim() == "")
+                {
+                    tmle.Item1 = false;
+                    tmle.Item2 = tmle.Item2.Append(new trackManLoadError {
+                        module = i,
+                        errText = "Please input a valid file name/label.",
+                        errColor = Color.Red
+                    }).ToArray();
+                }
+            }
+
+            return tmle;
+        }
+
+        private void reportErrors(trackManLoadError[] errList)
+        {
+            SystemSounds.Asterisk.Play();
+
+            int i;
+            int j = tarLabel.Length - 1;
+
+            for (i = 0; i < j; i++)
+            {
+                tarLabel[i].Item1.Text = tarLabel[i].Item2;
+                tarLabel[i].Item1.ForeColor = defColor;
+            }
+
+            int k;
+            j = errList.Length - 1;
+
+            for (i = 0; i < j; i++)
+            {
+                k = errList[i].module;
+                tarLabel[k].Item1.Text = errList[i].errText;
+                tarLabel[k].Item1.ForeColor = errList[i].errColor;
+            }
+        }
+
+        private void browseGeneralButton(string addfilter, TextBox targetBox)
+        {
+            string fil;
+            int index;
+            if (addfilter == null)
+            {
+                fil = "All Files (*.*)|*.*";
+                index = 0;
+            }
+            else
+            {
+                fil = "All Files (*.*)|*.*|" + addfilter;
+                index = 2;
             }
 
             OpenFileDialog ofd = new OpenFileDialog
             {
                 InitialDirectory = Application.StartupPath,
-                Filter = filter,
-                FilterIndex = 2,
+                Filter = fil,
+                FilterIndex = index,
                 RestoreDirectory = true
             };
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                targetTextBox.Text = ofd.FileName;
+                targetBox.Text = ofd.FileName;
             }
+        }
+
+        private void buttonBrowseLayout_Click(object sender, EventArgs e)
+        {
+            browseGeneralButton("Mode 7 Screens (*.SCR)|*.SCR", textM7ScreenPath);
+        }
+
+        private void buttonBrowseGraphics_Click(object sender, EventArgs e)
+        {
+            browseGeneralButton("Mode 7 Graphics (*.CM7)|*.CM7", textM7Graphics);
+        }
+
+        private void buttonBrowsePalette_Click(object sender, EventArgs e)
+        {
+            browseGeneralButton("Color Palettes (*.COL)|*.COL", textColorPalette);
+        }
+
+        private void buttonBrowseCommon_Click(object sender, EventArgs e)
+        {
+            browseGeneralButton("Mode 7 Graphics (*.CM7)|*.CM7", textCommon);
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -74,45 +144,74 @@ namespace SMKToolbox
 
         private void buttonLoad_Click(object sender, EventArgs e)
         {
-            string commonPath;
+            overlaySetup set;
 
-            if (checkLoadCommon.Checked)
+            List<string> paths = new List<string>();
+            paths.Add(textM7ScreenPath.Text);
+            paths.Add(textM7Graphics.Text);
+            paths.Add(textColorPalette.Text);
+
+            if (checkLoadCommon.Checked) paths.Add(textCommon.Text); else paths.Add(null);
+            if (checkEnableOverlay.Checked)
             {
-                commonPath = this.textCommon.Text;
-            }
-            else
-            {
-                commonPath = null;
-            }
+                paths.Add(textOverlaySource.Text);
+                paths.Add(textPatternReference.Text);
+                paths.Add(textSizeStorage.Text);
+                paths.Add(textOverlayFile.Text);
 
-            (bool, (string, Color)[]) status = FormOwner.LoadTrack(this.textM7ScreenPath.Text, this.textM7Graphics.Text, this.textColorPalette.Text, commonPath);
-            if (status.Item1)
-            {
-                this.Close();
-            }
-            else
-            {
-                this.labelMode7Scr.Text = status.Item2[0].Item1;
-                this.labelMode7Scr.ForeColor = status.Item2[0].Item2;
-
-                this.labelM7Graphics.Text = status.Item2[1].Item1;
-                this.labelM7Graphics.ForeColor = status.Item2[1].Item2;
-
-                this.labelColorPalette.Text = status.Item2[2].Item1;
-                this.labelColorPalette.ForeColor = status.Item2[2].Item2;
-
-                if (commonPath != null)
+                set = new overlaySetup
                 {
-                    this.labelCommon.Text = status.Item2[3].Item1;
-                    this.labelCommon.ForeColor = status.Item2[3].Item2;
-                }
+                    sourceFile = paths[4],
+                    patternRef = paths[5],
+                    sizeRef = paths[6],
+                    dataFile = paths[7],
+                    // startsAt = (int)numericCourseNumber.Value
+                };
+
+                if (radioCourseNumber.Checked) set.startsAt = (int)numericCourseNumber.Value * 128; else set.startsAt = (int)numericCourseNumber.Value;
             }
+            else
+            {
+                paths.Add(null);
+                paths.Add(null);
+                paths.Add(null);
+                paths.Add(null);
+
+                set = null;
+            }
+
+            (bool, trackManLoadError[]) status;
+
+            status = validatePaths(paths);
+            if (!status.Item1)
+            {
+                reportErrors(status.Item2);
+                return;
+            }
+
+            status = FormOwner.LoadTrack(this.textM7ScreenPath.Text, this.textM7Graphics.Text, this.textColorPalette.Text, paths[3], set);
+            if (status.Item1) Close(); else reportErrors(status.Item2);
         }
 
         private void checkLoadCommon_CheckedChanged(object sender, EventArgs e)
         {
             textCommon.Enabled = checkLoadCommon.Checked;
             buttonCommon.Enabled = checkLoadCommon.Checked;
+        }
+
+        private void buttonBrowseOverlaySource_Click(object sender, EventArgs e)
+        {
+            browseGeneralButton("Assembly Source File (*.asm)|*.asm", textOverlaySource);
+        }
+
+        private void buttonBrowseOverlayData_Click(object sender, EventArgs e)
+        {
+            browseGeneralButton("Binary File (*.bin)|*.bin", textOverlayFile);
+        }
+
+        private void checkEnableOverlay_CheckedChanged(object sender, EventArgs e)
+        {
+            groupOverlay.Enabled = checkEnableOverlay.Checked;
         }
     }
 }
